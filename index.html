@@ -5,44 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    /* RESET */
+    /* RESET & DASAR */
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      background: black;
+      background: #f0f2f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Mencegah scroll ganda */
     }
 
-    /* IFRAME FULL SCREEN */
-    iframe {
-      position: fixed;
-      inset: 0;               /* top:0 right:0 bottom:0 left:0 */
-      width: 100vw;
-      height: 100vh;
-      border: none;
+    /* NAVIGASI ATAS (MENU) */
+    .navbar {
+      background-color: #2c3e50; /* Warna gelap ala dashboard */
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 50px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 10;
     }
+
+    .navbar h1 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .menu-btn-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .btn:hover, .btn.active {
+      background: white;
+      color: #2c3e50;
+      border-color: white;
+    }
+
+    /* IFRAME CONTAINER */
+    .iframe-container {
+      flex-grow: 1; /* Mengisi sisa ruang di bawah navbar */
+      position: relative;
+      width: 100%;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* LOADING SPINNER (Opsional agar user tahu sedang memuat) */
+    #loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #2c3e50;
+      font-size: 14px;
+      display: none; /* Hidden by default */
+    }
+
   </style>
 </head>
 
 <body>
 
-  <iframe
-    id="timerFrame"
-    src="https://script.google.com/macros/s/AKfycbxO_PY3svmyegcXkNEcMyb2QiQ1gUy8orRYOCMVSxM9Ii4gDn6D7an_AAVrv1Gmq_vb/exec"
-    allowfullscreen
-    loading="eager">
-  </iframe>
+  <div class="navbar">
+    <h1>Sistem Peminjaman Ruang</h1>
+    <div class="menu-btn-container">
+      <button class="btn active" id="btn-home" onclick="gantiHalaman('index', this)">Beranda</button>
+      <button class="btn" id="btn-login" onclick="gantiHalaman('login', this)">Login</button>
+    </div>
+  </div>
+
+  <div class="iframe-container">
+    <div id="loader">Memuat...</div>
+    <iframe
+      id="appFrame"
+      src="https://script.google.com/macros/s/AKfycbxO_PY3svmyegcXkNEcMyb2QiQ1gUy8orRYOCMVSxM9Ii4gDn6D7an_AAVrv1Gmq_vb/exec?page=index"
+      allowfullscreen>
+    </iframe>
+  </div>
 
   <script>
-    // Fullscreen hanya bisa dipicu oleh interaksi user (aturan browser)
-    document.addEventListener('click', () => {
-      const iframe = document.getElementById('timerFrame');
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      }
-    });
+    // URL Dasar Google Script Anda
+    const baseURL = "https://script.google.com/macros/s/AKfycbxO_PY3svmyegcXkNEcMyb2QiQ1gUy8orRYOCMVSxM9Ii4gDn6D7an_AAVrv1Gmq_vb/exec";
+
+    function gantiHalaman(pageName, btnElement) {
+      const iframe = document.getElementById('appFrame');
+      const loader = document.getElementById('loader');
+      
+      // Tampilkan loader sebentar
+      loader.style.display = 'block';
+      iframe.style.opacity = '0.5';
+
+      // Ganti Source Iframe sesuai parameter page
+      iframe.src = baseURL + "?page=" + pageName;
+
+      // Update tampilan tombol aktif
+      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      // Kembalikan opacity setelah load (estimasi kasar karena kita tidak bisa deteksi load event sempurna di cross-origin)
+      setTimeout(() => {
+        loader.style.display = 'none';
+        iframe.style.opacity = '1';
+      }, 1500);
+    }
   </script>
 
 </body>
