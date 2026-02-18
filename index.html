@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <title>Peminjaman Ruangan BKPSDM Cilacap</title>
+  <title>Peminjaman Ruangan di BKPSDM Kabupaten Cilacap</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    body, html {
+    /* RESET */
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       width: 100%;
+      height: 100%;
       overflow: hidden;
-      background-color: #ffffff;
+      background: black;
     }
+
+    /* IFRAME FULL SCREEN */
     iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      inset: 0;               /* top:0 right:0 bottom:0 left:0 */
+      width: 100vw;
+      height: 100vh;
       border: none;
     }
   </style>
 </head>
+
 <body>
 
-  <iframe 
-    id="appFrame"
-    name="mainFrame" 
-    src="https://script.google.com/macros/s/AKfycbxO_PY3svmyegcXkNEcMyb2QiQ1gUy8orRYOCMVSxM9Ii4gDn6D7an_AAVrv1Gmq_vb/exec?page=index"
-    allowfullscreen>
+  <iframe
+    id="timerFrame"
+    src="https://script.google.com/macros/s/AKfycbxO_PY3svmyegcXkNEcMyb2QiQ1gUy8orRYOCMVSxM9Ii4gDn6D7an_AAVrv1Gmq_vb/exec"
+    allowfullscreen
+    loading="eager">
   </iframe>
 
   <script>
-    /**
-     * Trik untuk memaksa link yang dibuka di dalam iframe 
-     * agar tetap terbuka di dalam iframe ini juga, bukan pindah tab.
-     */
-    const iframe = document.getElementById('appFrame');
-
-    // Kita pantau perubahan URL di dalam iframe
-    // Catatan: Karena batasan Cross-Origin, browser mungkin membatasi deteksi otomatis.
-    // Namun, penamaan name="mainFrame" di atas adalah cara standar HTML 
-    // agar link dengan target="mainFrame" atau target="_self" tetap di dalam bingkai.
+    // Fullscreen hanya bisa dipicu oleh interaksi user (aturan browser)
+    document.addEventListener('click', () => {
+      const iframe = document.getElementById('timerFrame');
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      }
+    });
   </script>
 
 </body>
